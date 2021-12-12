@@ -14,6 +14,50 @@ contract JobsContract is Ownable {
         jobs[jobsCount] = job;
         jobsCount++;
     }
+
+    function editJob( 
+        uint256 index,
+        string memory _title,
+        string memory _description,
+        address _selectedApplicant,
+        uint256 _jobStatus
+    ) external onlyOwner {
+        jobs[index].editJob(
+            _title,
+            _description,
+            _selectedApplicant,
+            _jobStatus
+        );
+    }
+
+    function applyJob(
+        uint256 index,
+        string memory _experienceDescription,
+        string memory _contact, 
+        string memory _rate 
+    ) external {
+        jobs[index].applyJob(
+            _experienceDescription,
+            _contact,
+            _rate
+        );
+    }
+
+    function chooseApplicant(
+        uint256 index,
+        address _applicantAddress 
+    ) external onlyOwner {
+        jobs[index].chooseApplicant(
+            _applicantAddress
+        );
+    }
+
+    function destroyJob(
+        uint256 index
+    ) external onlyOwner {
+        jobs[index].destroyJob();
+    }
+
     function getApplicant(uint256 index, uint256 applicantIndex) external view returns(
         address addr,
         string memory experienceDescription,
