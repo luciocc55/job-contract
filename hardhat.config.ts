@@ -1,7 +1,6 @@
 import * as dotenv from "dotenv";
 
 import { HardhatUserConfig, task } from "hardhat/config";
-import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
@@ -15,7 +14,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
   const accounts = await hre.ethers.getSigners();
 
   for (const account of accounts) {
-    console.log(account.address, 'ADDRESS');
+    console.log(account.address, "ADDRESS");
   }
 });
 
@@ -24,7 +23,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 
 const config: HardhatUserConfig = {
   solidity: "0.6.12",
-  defaultNetwork: 'localhost',
+  defaultNetwork: "localhost",
   networks: {
     localhost: {
       url: "http://localhost:8545",
@@ -42,9 +41,6 @@ const config: HardhatUserConfig = {
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
     currency: "USD",
-  },
-  etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
   },
 };
 
