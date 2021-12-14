@@ -1,46 +1,64 @@
-import * as dotenv from "dotenv";
-
-import { HardhatUserConfig, task } from "hardhat/config";
-import "@nomiclabs/hardhat-waffle";
-import "@typechain/hardhat";
-import "hardhat-gas-reporter";
+import "dotenv/config";
+import { HardhatUserConfig } from "hardhat/types";
+import "hardhat-deploy";
+import "hardhat-deploy-ethers";
+import "hardhat-typechain";
 import "solidity-coverage";
 
-dotenv.config();
+let mnemonic = process.env.MNEMONIC;
+if (!mnemonic) {
+  mnemonic = "test test test test test test test test test test test junk";
+}
+const mnemonicAccounts = {
+  mnemonic,
+};
 
-// This is a sample Hardhat task. To learn how to create your own go to
-// https://hardhat.org/guides/create-task.html
-task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
-  const accounts = await hre.ethers.getSigners();
-
-  for (const account of accounts) {
-    console.log(account.address, "ADDRESS");
-  }
-});
-
-// You need to export an object to set up your config
-// Go to https://hardhat.org/config/ to learn more
+const accounts = {
+  Localnet: [String(process.env.LOCALNET_PRIVATE_KEY)],
+  Testnet: [String(process.env.TESTNET_PRIVATE_KEY)],
+  Mainnet: [String(process.env.MAINNET_PRIVATE_KEY)],
+};
 
 const config: HardhatUserConfig = {
-  solidity: "0.6.12",
-  defaultNetwork: "localhost",
+  solidity: {
+    version: "0.6.12",
+  },
+  namedAccounts: {
+    deployer: 0,
+  },
   networks: {
+    coverage: {
+      url: "http://localhost:5458",
+      accounts: mnemonicAccounts,
+    },
+    hardhat: {
+      accounts: mnemonicAccounts,
+    },
     localhost: {
       url: "http://localhost:8545",
-      /*
-        notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
-        (you can put in a mnemonic here to set the deployer locally)
-      */
     },
-    ropsten: {
-      url: process.env.ROPSTEN_URL || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    localnet: {
+      url: "http://localhost:9500",
+      chainId: 1666700000,
+      accounts: accounts.Localnet,
+    },
+    testnet: {
+      url: "https://api.s0.b.hmny.io",
+      chainId: 1666700000,
+      accounts: accounts.Testnet,
+    },
+    mainnet: {
+      url: "https://api.s0.t.hmny.io",
+      chainId: 1666600000,
+      accounts: accounts.Mainnet,
     },
   },
-  gasReporter: {
-    enabled: process.env.REPORT_GAS !== undefined,
-    currency: "USD",
+  paths: {
+    sources: "src",
+  },
+  external: {
+    contracts: [],
+    deployments: {},
   },
 };
 

@@ -1,46 +1,88 @@
-# Advanced Sample Hardhat Project
+# Hardhat Starter Pack
 
-This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.
+Hardhat Starter Pack is a Hardhat deployment stack for Harmony featuring:
 
-The project comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts. It also comes with a variety of other tools, preconfigured to work with the project code.
+- `hardhat-deploy` for smart contract deployments
+- `solidity-coverage` for smart contract code coverage analysis
+- `hardhat-typechain` for smart contract static typing
+- `mocha` for testing
+- `eslint` for linting
+- `prettier` for code formatting
 
-Try running some of the following tasks:
+The starter pack is preconfigured to deploy to Harmony's `localnet`, `testnet` and `mainnet` networks.
 
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-npx hardhat help
-REPORT_GAS=true npx hardhat test
-npx hardhat coverage
-npx hardhat run scripts/deploy.ts
-TS_NODE_FILES=true npx ts-node scripts/deploy.ts
-npx eslint '**/*.{js,ts}'
-npx eslint '**/*.{js,ts}' --fix
-npx prettier '**/*.{json,sol,md}' --check
-npx prettier '**/*.{json,sol,md}' --write
-npx solhint 'contracts/**/*.sol'
-npx solhint 'contracts/**/*.sol' --fix
+## Installation
+
+```
+git clone https://github.com/harmony-one/hardhat-starter-pack.git
+cd hardhat-starter-pack
+yarn install
 ```
 
-# Etherscan verification
+Modify .env and replace "`ENTER_PRIVATE_KEY_HERE`" for each network with the respective private key you want to use when deploying contracts.
 
-To try out Etherscan verification, you first need to deploy a contract to an Ethereum network that's supported by Etherscan, such as Ropsten.
+## Usage
 
-In this project, copy the .env.example file to a file named .env, and then edit it to fill in the details. Enter your Etherscan API key, your Ropsten node URL (eg from Alchemy), and the private key of the account which will send the deployment transaction. With a valid .env file in place, first deploy your contract:
+### Compilation
 
-```shell
-hardhat run --network ropsten scripts/sample-script.ts
+```
+yarn compile
 ```
 
-Then, copy the deployment address and paste it in to replace `DEPLOYED_CONTRACT_ADDRESS` in this command:
+### Coverage
 
-```shell
-npx hardhat verify --network ropsten DEPLOYED_CONTRACT_ADDRESS "Hello, Hardhat!"
+```
+yarn coverage
 ```
 
-# Performance optimizations
+### Deployment
 
-For faster runs of your tests and scripts, consider skipping ts-node's type checking by setting the environment variable `TS_NODE_TRANSPILE_ONLY` to `1` in hardhat's environment. For more details see [the documentation](https://hardhat.org/guides/typescript.html#performance-optimizations).
+#### Hardhat
+
+Terminal window #1:
+
+```
+yarn hardhat node
+```
+
+Terminal window #2:
+
+```
+yarn void:deploy
+```
+
+#### Harmony Localnet
+
+Deploying to localnet requires that you have a Harmony node running at `http://localhost:9500`.
+
+```
+yarn localnet:deploy
+```
+
+#### Harmony Testnet
+
+```
+yarn testnet:deploy
+```
+
+#### Harmony Mainnet
+
+```
+yarn mainnet:deploy
+```
+
+### Clean slate
+
+The starter pack includes a `TestToken.sol` contract that is used as an example for deployments and tests.
+
+When you've verified that deployments work using the `TestToken.sol` contract you can remove it, its deployment steps and tests by running:
+
+```
+./clean.sh && rm -rf clean.sh
+```
+
+You should now have a clean slate for you to use for your projects.
+
+## Attribution
+
+This starter pack was largely inspired by [Ronan Sandford](https://twitter.com/wighawag)'s [hardhat-deploy-ts-test](https://github.com/wighawag/hardhat-deploy-ts-test).

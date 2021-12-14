@@ -2,9 +2,9 @@ pragma solidity 0.6.12;
 pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import "./JobStructContract.sol";
+import "./JobStruct.sol";
 
-contract JobContract is Ownable, JobStruct {
+contract JobContract is Ownable {
     using SafeMath for uint256;
     string public name;
     Job public job;
@@ -76,12 +76,13 @@ contract JobContract is Ownable, JobStruct {
     }
     
     function applyJob(
+        address _applicantAddress,
         string memory _experienceDescription,
         string memory _contact, 
         string memory _rate 
     ) external onlyOpen() {
         Applicant memory newApplicant = Applicant({
-            addr: msg.sender,
+            addr: _applicantAddress,
             experienceDescription: _experienceDescription,
             contact: _contact,
             rate: _rate

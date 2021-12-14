@@ -9,6 +9,11 @@ contract JobsContract is Ownable {
     mapping(uint256 => JobContract) jobs;
     uint256 jobsCount;
 
+    modifier validJob(uint256 _count){
+        require(_count < jobsCount, "Invalid job...");
+        _;
+    }
+
     function proposeJob(string memory _title, string memory _description ) external onlyOwner {
         JobContract job = new JobContract(_title, _description);
         jobs[jobsCount] = job;
@@ -21,7 +26,7 @@ contract JobsContract is Ownable {
         string memory _description,
         address _selectedApplicant,
         uint256 _jobStatus
-    ) external onlyOwner {
+    ) external onlyOwner validJob(index) {
         jobs[index].editJob(
             _title,
             _description,
@@ -35,8 +40,9 @@ contract JobsContract is Ownable {
         string memory _experienceDescription,
         string memory _contact, 
         string memory _rate 
-    ) external {
+    ) external validJob(index) {
         jobs[index].applyJob(
+            msg.sender,
             _experienceDescription,
             _contact,
             _rate
@@ -46,7 +52,7 @@ contract JobsContract is Ownable {
     function chooseApplicant(
         uint256 index,
         address _applicantAddress 
-    ) external onlyOwner {
+    ) external onlyOwner validJob(index) {
         jobs[index].chooseApplicant(
             _applicantAddress
         );
@@ -54,11 +60,11 @@ contract JobsContract is Ownable {
 
     function destroyJob(
         uint256 index
-    ) external onlyOwner {
+    ) external onlyOwner validJob(index) {
         jobs[index].destroyJob();
     }
 
-    function getApplicant(uint256 index, uint256 applicantIndex) external view returns(
+    function getApplicant(uint256 index, uint256 applicantIndex) external validJob(index) view returns(
         address addr,
         string memory experienceDescription,
         string memory contact,
@@ -67,11 +73,11 @@ contract JobsContract is Ownable {
         return jobs[index].getApplicant(applicantIndex);
     }
 
-    function getApplicantCount(uint256 index) external view returns(uint256) { 
+    function getApplicantCount(uint256 index) external validJob(index) view returns(uint256) { 
         return jobs[index].getApplicantCount();
     }
     
-    function getJob(uint256 index) external view returns(
+    function getJob(uint256 index) external validJob(index) view returns(
         string memory description,
         string memory title,
         uint256 creationTimestamp,
